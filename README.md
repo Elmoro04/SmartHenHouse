@@ -24,12 +24,12 @@ Each component communicates through MQTT topics.
 
 ## MQTT Topic Structure
 
-All communications follow a hierarchical topic structure:
+All communications follow a hierarchical topic structure:<br>
 device/{deviceId}/info<br>
 device/{deviceId}/sensor/*<br>
 device/{deviceId}/actuator/*<br>
 
-Examples:
+Examples:<br>
 device/env-123/sensor/temperature<br>
 device/door-456/actuator/door<br>
 device/presence-789/sensor/presence<br>
@@ -39,11 +39,11 @@ device/presence-789/sensor/presence<br>
 
 ## Message Format
 
-Sensor data is exchanged using JSON messages with the following structure:
-{
-"timestamp": 1710000000000,
-"type": "TEMPERATURE",
-"value": "23"
+Sensor data is exchanged using JSON messages with the following structure:<br>
+{<br>
+"timestamp": 1710000000000,<br>
+"type": "TEMPERATURE",<br>
+"value": "23"<br>
 }
 
 
@@ -57,10 +57,10 @@ Supported message types include:
 - WINDOW
 
 Actuator commands are sent as simple string payloads:
-ON
-OFF
-OPEN
-CLOSE
+ON  
+OFF  
+OPEN  
+CLOSE  
 
 
 ---
