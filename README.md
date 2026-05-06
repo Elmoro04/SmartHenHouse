@@ -25,14 +25,14 @@ Each component communicates through MQTT topics.
 ## MQTT Topic Structure
 
 All communications follow a hierarchical topic structure:
-device/{deviceId}/info
-device/{deviceId}/sensor/*
-device/{deviceId}/actuator/*
+device/{deviceId}/info<br>
+device/{deviceId}/sensor/*<br>
+device/{deviceId}/actuator/*<br>
 
 Examples:
-device/env-123/sensor/temperature
-device/door-456/actuator/door
-device/presence-789/sensor/presence
+device/env-123/sensor/temperature<br>
+device/door-456/actuator/door<br>
+device/presence-789/sensor/presence<br>
 
 
 ---
