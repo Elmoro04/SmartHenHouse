@@ -153,12 +153,15 @@ public class DataCollectorManager {
      * Handle automatic door closing in the evening
      */
     private void handleClosingTime() throws Exception {
+
         int totalChickens = presenceMap.values()
                 .stream()
                 .mapToInt(Integer::intValue)
                 .sum();
 
-        if((LocalTime.now().isAfter(openingTime) && !openedToday) && totalChickens == expectedChickens){
+        if(LocalTime.now().isAfter(closingTime)
+                && !closedToday
+                && totalChickens == expectedChickens) {
 
             for(String doorId : doorIds) {
                 sendCommand(doorId, "actuator/door", "CLOSE");
@@ -178,7 +181,7 @@ public class DataCollectorManager {
      */
     private void handleOpeningTime() throws Exception {
 
-        if(LocalTime.now().isAfter(closingTime) && !closedToday) {
+        if(LocalTime.now().isAfter(openingTime) && !openedToday) {
 
             for(String doorId : doorIds) {
                 sendCommand(doorId, "actuator/door", "OPEN");
