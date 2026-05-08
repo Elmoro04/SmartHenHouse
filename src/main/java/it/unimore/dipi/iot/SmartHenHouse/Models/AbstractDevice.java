@@ -5,7 +5,6 @@ import it.unimore.dipi.iot.SmartHenHouse.Interfaces.Sensor;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Abstract base class representing a generic IoT device.

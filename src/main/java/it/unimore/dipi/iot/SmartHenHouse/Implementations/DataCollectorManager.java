@@ -124,16 +124,16 @@ public class DataCollectorManager {
 
         // Cooling logic
         if(temp > maxTemp && !cooling) {
-            sendCommand(deviceId, "actuator/cooling", "ON");
+            sendCommandTemperature(deviceId, "actuator/cooling", "ON", temp);
         } else if(temp <= maxTemp && cooling) {
-            sendCommand(deviceId, "actuator/cooling", "OFF");
+            sendCommandTemperature(deviceId, "actuator/cooling", "OFF", temp);
         }
 
         // Heating logic
         if(temp < minTemp && !heating) {
-            sendCommand(deviceId, "actuator/heating", "ON");
+            sendCommandTemperature(deviceId, "actuator/heating", "ON", temp);
         } else if(temp >= minTemp && heating) {
-            sendCommand(deviceId, "actuator/heating", "OFF");
+            sendCommandTemperature(deviceId, "actuator/heating", "OFF", temp);
         }
     }
 
@@ -206,6 +206,15 @@ public class DataCollectorManager {
 
         client.publish(topic, msg);
         logger.info("Sent command to topic: {} with value: {}", topic, value);
+    }
+
+    /**
+     * Send command to an environmental SO with temperature context for better logging
+     */
+    private void sendCommandTemperature(String deviceId, String action, String value, int temperature) throws Exception {
+        sendCommand(deviceId, action, value);
+        String topic = "device/" + deviceId + "/" + action;
+        logger.info("Sent command to topic: {} with value: {} cause temperature is {}", topic, value, temperature);
     }
 
     /**

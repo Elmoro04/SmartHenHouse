@@ -44,7 +44,8 @@ public class PresenceMonitoringDevice extends AbstractDevice {
     @Override
     public void publishData() throws Exception {
 
-        chickens += random.nextInt(10) - 5;
+        chickens += random.nextInt(10) - 4;
+        if(chickens < 0) chickens = 0;
 
         MessageDescriptor message = new MessageDescriptor(
                 System.currentTimeMillis(),
