@@ -205,7 +205,9 @@ public class DataCollectorManager {
         msg.setQos(0);
 
         client.publish(topic, msg);
-        logger.info("Sent command to topic: {} with value: {}", topic, value);
+        if(!action.contains("heating") && !action.contains("cooling")) {
+            logger.info("Sent command to topic: {} with value: {}", topic, value);
+        }
     }
 
     /**
@@ -234,6 +236,28 @@ public class DataCollectorManager {
         }
     }
 
+    /**
+     * Handle queued MQTT messages
+     */
+    private void handleMessage(String[] data) {
+
+        try {
+
+            String topic = data[0];
+            String payload = data[1];
+            String type = data[2];
+
+            if(type.equals("INFO")) {
+                handleDeviceInfo(topic, payload);
+            } else {
+                onMessage(topic, payload);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
 
         try {
@@ -248,15 +272,7 @@ public class DataCollectorManager {
 
                     String[] data = manager.messageQueue.poll();
 
-                    String topic = data[0];
-                    String payload = data[1];
-                    String type = data[2];
-
-                    if(type.equals("INFO")) {
-                        manager.handleDeviceInfo(topic, payload);
-                    } else {
-                        manager.onMessage(topic, payload);
-                    }
+                    manager.handleMessage(data);
                 }
                 manager.handleClosingTime();
                 manager.handleOpeningTime();

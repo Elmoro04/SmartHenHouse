@@ -62,7 +62,7 @@ public class EnvironmentalControlSmartObject extends AbstractSmartObject {
     @Override
     public void publishData() throws Exception {
 
-        temperature = temperature - 1 + random.nextInt(2);
+        temperature = temperature - 2 + random.nextInt(5);
         if(heatingOn) {
             temperature += 1;
         }

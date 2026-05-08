@@ -28,6 +28,11 @@ public class DoorSmartObject extends OpeningSmartObject {
     }
 
     @Override
+    public void handleCommand(String topic, String payload) {
+        handleOpeningCommand(topic, payload, "DOOR", logger);
+    }
+
+    @Override
     public void subscribeToCommands() throws Exception {
 
         client.subscribe(buildTopic("actuator/door"), (topic, msg) -> {

@@ -1,6 +1,9 @@
 package it.unimore.dipi.iot.SmartHenHouse.Models;
-import it.unimore.dipi.iot.SmartHenHouse.Messages.MessageDescriptor;
 import org.eclipse.paho.client.mqttv3.MqttClient;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class representing a generic opening smart object
@@ -24,45 +27,39 @@ public abstract class OpeningSmartObject extends AbstractSmartObject {
 
     public OpeningSmartObject(String deviceId, MqttClient client) {
         super(deviceId, client);
-        this.isOpen = true;
+        this.isOpen = false;
     }
 
     /**
      * Handle OPEN and CLOSE commands
+     *
+     * @param topic   MQTT topic
+     * @param payload message content
+     * @param type    opening object type
+     * @param logger  logger instance
      */
-    @Override
-    public void handleCommand(String topic, String payload) {
+    protected void handleOpeningCommand(String topic, String payload, String type, Logger logger) {
 
-        try {
+        if(payload.equalsIgnoreCase("OPEN")) {
 
-            MessageDescriptor message;
-
-            if(payload.equalsIgnoreCase("OPEN")) {
-
-                if(!isOpen) {
-                    isOpen = true;
-                    message = new MessageDescriptor(System.currentTimeMillis(), "DOOR", "OPENED");
-                } else {
-                    message = new MessageDescriptor(System.currentTimeMillis(), "DOOR", "ALREADY_OPENED");
-                }
-
-            } else if(payload.equalsIgnoreCase("CLOSE")) {
-
-                if(isOpen) {
-                    isOpen = false;
-                    message = new MessageDescriptor(System.currentTimeMillis(), "DOOR", "CLOSED");
-                } else {
-                    message = new MessageDescriptor(System.currentTimeMillis(), "DOOR", "ALREADY_CLOSED");
-                }
-
+            if(!isOpen) {
+                isOpen = true;
+                logger.debug("{} received OPEN command from topic {}", type, topic);
             } else {
-                message = new MessageDescriptor(System.currentTimeMillis(), "DOOR", "UNKNOWN_COMMAND");
+                logger.debug("{} already OPEN", type);
             }
 
-            publish(buildTopic("sensor/door"), gson.toJson(message));
+        } else if(payload.equalsIgnoreCase("CLOSE")) {
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            if(isOpen) {
+                isOpen = false;
+                logger.debug("{} received CLOSE command from topic {}", type, topic);
+            } else {
+                logger.debug("{} already CLOSED", type);
+            }
+
+        } else {
+            logger.error("{} received unknown command {} from topic {}", type, payload, topic);
         }
     }
 
