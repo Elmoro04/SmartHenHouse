@@ -48,6 +48,7 @@ public abstract class AbstractDevice implements Sensor {
         msg.setQos(0);
         client.publish(topic, msg);
     }
+
     /**
      * Publish the information of the device to the MQTT broker
      *

@@ -81,6 +81,44 @@ public class DataCollectorManager {
         logger.info("DataCollectorManager started and subscribed to topics");
     }
 
+    /**
+     * Handle queued MQTT messages
+     */
+    private void handleMessage(String[] data) {
+
+        try {
+
+            String topic = data[0];
+            String payload = data[1];
+            String type = data[2];
+
+            if(type.equals("INFO")) {
+                handleDeviceInfo(topic, payload);
+            } else {
+                onMessage(topic, payload);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Handle device info messages to identify door devices
+     */
+    private void handleDeviceInfo(String topic, String payload) {
+
+        String deviceId = topic.split("/")[1];
+        logger.info("Discovered device: {} of type {}", deviceId, payload);
+
+        if(payload.equalsIgnoreCase("DOOR")) {
+
+            if(!doorIds.contains(deviceId)) {
+                doorIds.add(deviceId);
+            }
+
+        }
+    }
 
     /**
      * Handle incoming messages
@@ -161,7 +199,7 @@ public class DataCollectorManager {
 
         if(LocalTime.now().isAfter(closingTime)
                 && !closedToday
-                && totalChickens == expectedChickens) {
+                && totalChickens >= expectedChickens) {
 
             for(String doorId : doorIds) {
                 sendCommand(doorId, "actuator/door", "CLOSE");
@@ -205,7 +243,7 @@ public class DataCollectorManager {
         String topic = "device/" + deviceId + "/" + action;
 
         MqttMessage msg = new MqttMessage(value.getBytes());
-        msg.setQos(0);
+        msg.setQos(2);
 
         client.publish(topic, msg);
         if(!action.contains("heating") && !action.contains("cooling")) {
@@ -222,44 +260,6 @@ public class DataCollectorManager {
         logger.info("Sent command to topic: {} with value: {} cause temperature is {}", topic, value, temperature);
     }
 
-    /**
-     * Handle device info messages to identify door devices
-     */
-    private void handleDeviceInfo(String topic, String payload) {
-
-        String deviceId = topic.split("/")[1];
-        logger.info("Discovered device: {} of type {}", deviceId, payload);
-
-        if(payload.equalsIgnoreCase("DOOR")) {
-
-            if(!doorIds.contains(deviceId)) {
-                doorIds.add(deviceId);
-            }
-
-        }
-    }
-
-    /**
-     * Handle queued MQTT messages
-     */
-    private void handleMessage(String[] data) {
-
-        try {
-
-            String topic = data[0];
-            String payload = data[1];
-            String type = data[2];
-
-            if(type.equals("INFO")) {
-                handleDeviceInfo(topic, payload);
-            } else {
-                onMessage(topic, payload);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public static void main(String[] args) {
 

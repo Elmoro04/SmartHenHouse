@@ -27,12 +27,14 @@ public class WindowSmartObject extends OpeningSmartObject {
         super(deviceId, client);
     }
 
-
     @Override
     public void handleCommand(String topic, String payload) {
         handleOpeningCommand(topic, payload, "WINDOW", logger);
     }
 
+    /**
+     * Subscribe to actuator commands for the window (OPEN / CLOSE)
+     */
     @Override
     public void subscribeToCommands() throws Exception {
 
